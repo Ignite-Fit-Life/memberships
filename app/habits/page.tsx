@@ -1,8 +1,6 @@
 import { AppShell } from "@/components/AppShell";
 import { getHabits } from "@/lib/data";
 
-export const dynamic = "force-dynamic";
-
 export default async function HabitsPage() {
   const habits = await getHabits();
 

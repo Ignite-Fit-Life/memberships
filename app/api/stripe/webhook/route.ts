@@ -1,4 +1,4 @@
-import { getStripe } from "@/lib/stripe";
+import { stripe } from "@/lib/stripe";
 import { createClient } from "@supabase/supabase-js";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -12,7 +12,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Missing webhook config" }, { status: 400 });
   }
 
-  const stripe = getStripe();
   const event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

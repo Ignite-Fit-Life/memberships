@@ -1,8 +1,6 @@
 import { AppShell } from "@/components/AppShell";
 import { getCheckInTemplates } from "@/lib/data";
 
-export const dynamic = "force-dynamic";
-
 export default async function CheckInsPage() {
   const templates = await getCheckInTemplates();
 
