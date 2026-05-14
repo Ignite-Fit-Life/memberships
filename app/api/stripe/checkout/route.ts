@@ -1,5 +1,5 @@
 import { createServerSupabaseClient } from "@/lib/supabase";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { NextResponse } from "next/server";
 
 export async function POST() {
@@ -19,6 +19,7 @@ export async function POST() {
     return NextResponse.json({ error: "Missing STRIPE_MEMBERSHIP_PRICE_ID" }, { status: 500 });
   }
 
+  const stripe = getStripe();
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
     customer_email: user.email || undefined,
