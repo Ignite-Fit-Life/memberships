@@ -1,22 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-type HabitReminderRow = {
-  id: string;
-  user_id: string;
-  habit_id: string;
-  reminder_email: string | null;
-  reminder_time: string;
-  timezone: string;
-  days_of_week: number[];
-  last_sent_at: string | null;
-  habits: {
-    title: string;
-    target_value: number | null;
-    target_unit: string | null;
-  } | null;
-};
-
 function localParts(date: Date, timezone: string) {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: timezone,
@@ -100,7 +84,7 @@ export async function GET(request: Request) {
   }
 
   const now = new Date();
-const dueReminders = ((data ?? []) as unknown as HabitReminderRow[]).filter((reminder) => {
+  const dueReminders = ((data ?? []) as any[]).filter((reminder) => {
     if (!reminder.reminder_email) return false;
 
     const local = localParts(now, reminder.timezone);
@@ -115,7 +99,7 @@ const dueReminders = ((data ?? []) as unknown as HabitReminderRow[]).filter((rem
   });
 
   for (const reminder of dueReminders) {
-    const habit = reminder.habits;
+    const habit = Array.isArray(reminder.habits) ? reminder.habits[0] : reminder.habits;
     const target =
       habit?.target_value && habit?.target_unit
         ? ` Target: ${habit.target_value} ${habit.target_unit}.`

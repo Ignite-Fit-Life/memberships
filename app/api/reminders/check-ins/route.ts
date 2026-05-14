@@ -1,17 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-type ReminderRow = {
-  id: string;
-  user_id: string;
-  check_in_template_id: string;
-  reminder_email: string | null;
-  due_at: string;
-  check_in_templates: {
-    title: string;
-  } | null;
-};
-
 async function sendReminderEmail(to: string, subject: string, html: string) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.REMINDER_EMAIL_FROM;
@@ -63,10 +52,13 @@ export async function GET(request: Request) {
 
   const sent = [];
 
-for (const reminder of (reminders ?? []) as unknown as ReminderRow[]) {
+  for (const reminder of (reminders ?? []) as any[]) {
     if (!reminder.reminder_email) continue;
 
-    const title = reminder.check_in_templates?.title || "Ignite Fit Life Check-in";
+    const template = Array.isArray(reminder.check_in_templates)
+      ? reminder.check_in_templates[0]
+      : reminder.check_in_templates;
+    const title = template?.title || "Ignite Fit Life Check-in";
     const checkInUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/check-ins`;
 
     await sendReminderEmail(
