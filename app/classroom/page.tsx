@@ -1,6 +1,8 @@
 import { AppShell } from "@/components/AppShell";
 import { getLessons } from "@/lib/data";
 
+export const dynamic = "force-dynamic";
+
 export default async function ClassroomPage() {
   const lessons = await getLessons();
 

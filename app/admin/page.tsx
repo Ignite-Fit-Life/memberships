@@ -1,5 +1,7 @@
 import { AppShell } from "@/components/AppShell";
 
+export const dynamic = "force-dynamic";
+
 const adminAreas = [
   ["Workout Programs", "Create 90-day programs, weeks, workouts, exercises, demo videos, sets, reps, weight, RPE, tempo, and rest."],
   ["Habits", "Create habit targets and assign daily or weekly habits to clients."],
