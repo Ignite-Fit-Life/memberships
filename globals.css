@@ -82,6 +82,8 @@ select {
 
 .main {
   padding: 34px;
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 .topbar {
@@ -561,22 +563,22 @@ h3 {
 
 .admin-workspace {
   display: grid;
-  gap: 22px;
-  max-width: 1480px;
+  gap: 18px;
+  min-width: 0;
+  max-width: 1360px;
   margin: 0 auto;
 }
 
 .admin-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 380px;
-  gap: 28px;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 22px;
   align-items: end;
-  padding: 30px;
+  padding: 24px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 10px;
-  background: linear-gradient(135deg, #050505 0%, #141210 100%);
+  background: #050505;
   color: var(--white);
-  box-shadow: 0 18px 60px rgba(5, 5, 5, 0.12);
 }
 
 .admin-hero .eyebrow {
@@ -585,7 +587,7 @@ h3 {
 
 .admin-hero h1 {
   max-width: 720px;
-  font-size: clamp(2.35rem, 4vw, 4.25rem);
+  font-size: clamp(2.15rem, 3.2vw, 3.35rem);
   letter-spacing: 0;
 }
 
@@ -604,14 +606,14 @@ h3 {
 .admin-metrics div {
   display: grid;
   gap: 4px;
-  padding: 16px;
+  padding: 14px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.06);
 }
 
 .admin-metrics strong {
-  font-size: 1.55rem;
+  font-size: 1.35rem;
   line-height: 1;
 }
 
@@ -624,7 +626,7 @@ h3 {
 }
 
 .admin-workspace h2 {
-  font-size: clamp(1.35rem, 2vw, 2rem);
+  font-size: clamp(1.25rem, 1.7vw, 1.8rem);
 }
 
 .admin-workspace h3 {
@@ -638,10 +640,10 @@ h3 {
 }
 
 .admin-workspace .builder-tabs {
-  position: sticky;
-  top: 0;
+  position: static;
   z-index: 2;
   align-items: center;
+  overflow-x: auto;
   padding: 10px;
   border: 1px solid var(--line);
   border-radius: 10px;
@@ -655,24 +657,20 @@ h3 {
   background: transparent;
 }
 
-.admin-workspace .builder-tabs a:first-child {
-  border-color: var(--black);
-  background: var(--black);
-  color: var(--white);
-}
-
 .admin-workspace .builder-board {
-  grid-template-columns: 300px 310px minmax(480px, 1fr);
-  gap: 14px;
-  padding: 14px;
+  grid-template-columns: minmax(220px, 0.8fr) minmax(240px, 0.9fr) minmax(0, 1.45fr);
+  gap: 12px;
+  padding: 12px;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--white);
+  overflow: hidden;
 }
 
 .admin-workspace .builder-column {
   gap: 12px;
-  padding: 16px;
+  min-width: 0;
+  padding: 14px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fbfaf8;
@@ -688,7 +686,7 @@ h3 {
 }
 
 .admin-workspace .section-header.compact h2 {
-  font-size: 1.55rem;
+  font-size: 1.35rem;
 }
 
 .admin-workspace .section-header span {
@@ -699,6 +697,7 @@ h3 {
 .admin-workspace .compact-form,
 .admin-workspace .admin-form {
   max-width: none;
+  min-width: 0;
   gap: 10px;
 }
 
@@ -715,6 +714,7 @@ h3 {
 .admin-workspace .compact-form input,
 .admin-workspace .compact-form textarea,
 .admin-workspace .compact-form select {
+  min-width: 0;
   min-height: 42px;
   padding: 10px 12px;
   border-radius: 6px;
@@ -777,7 +777,7 @@ h3 {
 }
 
 .admin-workspace .block-builder {
-  grid-template-columns: minmax(260px, 0.8fr) minmax(360px, 1.2fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
   padding: 0;
   border: 0;
@@ -813,7 +813,7 @@ h3 {
 }
 
 .admin-workspace .admin-panel {
-  padding: 22px;
+  padding: 20px;
 }
 
 .admin-workspace #library .admin-form {
@@ -829,6 +829,43 @@ h3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
   align-items: start;
+}
+
+.admin-workspace .admin-section {
+  display: none;
+}
+
+.admin-workspace #builder {
+  display: grid;
+}
+
+.admin-workspace:has(.admin-section:target) #builder {
+  display: none;
+}
+
+.admin-workspace .admin-section:target {
+  display: grid;
+}
+
+.admin-workspace #library:target,
+.admin-workspace #progress:target {
+  display: grid;
+}
+
+.admin-workspace:has(#builder:target) .builder-tabs a[href="#builder"],
+.admin-workspace:has(#library:target) .builder-tabs a[href="#library"],
+.admin-workspace:has(#content:target) .builder-tabs a[href="#content"],
+.admin-workspace:has(#assignments:target) .builder-tabs a[href="#assignments"],
+.admin-workspace:has(#progress:target) .builder-tabs a[href="#progress"] {
+  border-color: var(--black);
+  background: var(--black);
+  color: var(--white);
+}
+
+.admin-workspace:not(:has(.admin-section:target)) .builder-tabs a[href="#builder"] {
+  border-color: var(--black);
+  background: var(--black);
+  color: var(--white);
 }
 
 .content-admin-grid .admin-panel {
@@ -860,9 +897,16 @@ h3 {
 }
 
 @media (max-width: 1280px) {
-  .admin-workspace .builder-board,
+  .admin-workspace .builder-board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-workspace .builder-column.wide {
+    grid-column: 1 / -1;
+  }
+
   .admin-workspace .block-builder {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .admin-workspace .builder-column {
@@ -875,12 +919,22 @@ h3 {
 }
 
 @media (max-width: 960px) {
+  .admin-workspace {
+    max-width: none;
+  }
+
   .admin-hero {
     grid-template-columns: 1fr;
   }
 
   .admin-metrics {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .admin-workspace .builder-board,
+  .admin-workspace .block-builder,
+  .admin-workspace #assignments {
+    grid-template-columns: 1fr;
   }
 }
 

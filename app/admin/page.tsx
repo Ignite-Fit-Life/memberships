@@ -473,7 +473,7 @@ export default async function AdminPage() {
         <a href="#progress">Progress</a>
       </nav>
 
-      <section id="builder" className="builder-board">
+      <section id="builder" className="builder-board admin-section">
         <article className="builder-column">
           <div className="section-header compact">
             <div>
@@ -748,7 +748,7 @@ export default async function AdminPage() {
         </article>
       </section>
 
-      <section id="library" className="card admin-panel">
+      <section id="library" className="card admin-panel admin-section">
         <div className="section-header">
           <div>
             <p className="eyebrow">Exercise Library</p>
@@ -778,7 +778,7 @@ export default async function AdminPage() {
         </form>
       </section>
 
-      <section id="content" className="content-admin-grid">
+      <section id="content" className="content-admin-grid admin-section">
         <article className="card admin-panel">
           <div className="section-header">
             <div>
@@ -871,7 +871,7 @@ export default async function AdminPage() {
         </article>
       </section>
 
-      <section id="assignments" className="grid two">
+      <section id="assignments" className="grid two admin-section">
         <article className="card admin-panel">
           <div className="section-header">
             <div>
@@ -905,7 +905,9 @@ export default async function AdminPage() {
           </form>
         </article>
 
-        <article id="progress" className="card admin-panel">
+      </section>
+
+      <section id="progress" className="card admin-panel admin-section">
           <div className="section-header">
             <div>
               <p className="eyebrow">Coach View</p>
@@ -936,7 +938,6 @@ export default async function AdminPage() {
               ) : null}
             </tbody>
           </table>
-        </article>
       </section>
       </div>
     </AppShell>
