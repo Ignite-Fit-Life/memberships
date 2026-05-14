@@ -100,7 +100,7 @@ export async function GET(request: Request) {
   }
 
   const now = new Date();
-  const dueReminders = ((data ?? []) as HabitReminderRow[]).filter((reminder) => {
+const dueReminders = ((data ?? []) as unknown as HabitReminderRow[]).filter((reminder) => {
     if (!reminder.reminder_email) return false;
 
     const local = localParts(now, reminder.timezone);
