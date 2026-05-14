@@ -63,7 +63,7 @@ export async function GET(request: Request) {
 
   const sent = [];
 
-  for (const reminder of (reminders ?? []) as ReminderRow[]) {
+for (const reminder of (reminders ?? []) as unknown as ReminderRow[]) {
     if (!reminder.reminder_email) continue;
 
     const title = reminder.check_in_templates?.title || "Ignite Fit Life Check-in";
