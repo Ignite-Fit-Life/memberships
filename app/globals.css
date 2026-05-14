@@ -226,6 +226,58 @@ h3 {
   text-align: left;
 }
 
+.admin-stack {
+  display: grid;
+  gap: 22px;
+}
+
+.admin-panel {
+  display: grid;
+  gap: 20px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.section-header span {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.admin-form {
+  max-width: none;
+}
+
+.wide-form {
+  max-width: 100%;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.form-grid.four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.check-row {
+  display: flex !important;
+  grid-template-columns: none !important;
+  align-items: center;
+  gap: 10px !important;
+  color: var(--muted);
+}
+
+.check-row input {
+  width: auto;
+}
+
 @media (max-width: 860px) {
   .shell {
     grid-template-columns: 1fr;
@@ -244,5 +296,14 @@ h3 {
   .grid.three,
   .grid.two {
     grid-template-columns: 1fr;
+  }
+
+  .form-grid,
+  .form-grid.four {
+    grid-template-columns: 1fr;
+  }
+
+  .section-header {
+    display: grid;
   }
 }

@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 async function signUp(name: string, email: string, password: string, request: Request) {
   const supabase = await createServerSupabaseClient();
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -15,7 +15,18 @@ async function signUp(name: string, email: string, password: string, request: Re
   const nextUrl = new URL(request.url);
 
   if (error) {
-    return NextResponse.redirect(new URL("/signup?error=invalid", nextUrl.origin), 303);
+    const url = new URL("/signup", nextUrl.origin);
+    url.searchParams.set("error", error.message);
+    url.searchParams.set("name", name);
+    url.searchParams.set("email", email);
+    return NextResponse.redirect(url, 303);
+  }
+
+  if (!data.session) {
+    const url = new URL("/login", nextUrl.origin);
+    url.searchParams.set("message", "Check your email to confirm your account, then log in.");
+    url.searchParams.set("email", email);
+    return NextResponse.redirect(url, 303);
   }
 
   return NextResponse.redirect(new URL("/dashboard", nextUrl.origin), 303);

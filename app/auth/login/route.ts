@@ -8,7 +8,10 @@ async function signIn(email: string, password: string, request: Request) {
   const nextUrl = new URL(request.url);
 
   if (error) {
-    return NextResponse.redirect(new URL("/login?error=invalid", nextUrl.origin), 303);
+    const url = new URL("/login", nextUrl.origin);
+    url.searchParams.set("error", error.message);
+    url.searchParams.set("email", email);
+    return NextResponse.redirect(url, 303);
   }
 
   return NextResponse.redirect(new URL("/dashboard", nextUrl.origin), 303);
