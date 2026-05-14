@@ -278,6 +278,242 @@ h3 {
   width: auto;
 }
 
+.builder-tabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.builder-tabs a,
+.mini-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.builder-tabs a:hover,
+.mini-button:hover {
+  border-color: var(--orange);
+}
+
+.mini-button.danger {
+  color: #a42612;
+}
+
+.builder-board {
+  display: grid;
+  grid-template-columns: 280px 260px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.builder-column {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.builder-column.wide {
+  gap: 18px;
+}
+
+.section-header.compact {
+  align-items: center;
+}
+
+.compact-form {
+  display: grid;
+  gap: 10px;
+}
+
+.compact-form input,
+.compact-form textarea,
+.compact-form select,
+.set-log-row input,
+.set-log-row textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  padding: 11px 12px;
+}
+
+.builder-list {
+  display: grid;
+  gap: 10px;
+}
+
+.builder-item {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  padding: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.builder-item strong,
+.workout-card strong,
+.exercise-card strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.builder-item span,
+.workout-card span,
+.exercise-card span {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.builder-item.active {
+  border-color: var(--orange);
+  box-shadow: inset 4px 0 0 var(--orange);
+}
+
+.workout-row {
+  display: grid;
+  gap: 10px;
+}
+
+.workout-pill {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  padding: 12px;
+}
+
+.block-builder,
+.exercise-block {
+  display: grid;
+  gap: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  padding: 18px;
+}
+
+.exercise-block summary {
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.exercise-card-list {
+  display: grid;
+  gap: 12px;
+}
+
+.exercise-card {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--soft);
+  padding: 16px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.workout-dashboard {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.program-view,
+.week-panel,
+.workout-card,
+.client-exercise,
+.set-log-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+}
+
+.program-view,
+.week-panel,
+.workout-card,
+.client-exercise {
+  padding: 18px;
+}
+
+.program-view {
+  display: grid;
+  gap: 12px;
+}
+
+.week-panel {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.workout-list,
+.log-form {
+  display: grid;
+  gap: 14px;
+}
+
+.workout-card {
+  display: grid;
+  gap: 14px;
+}
+
+.client-exercise {
+  display: grid;
+  gap: 12px;
+  background: var(--soft);
+}
+
+.set-log-panel {
+  padding: 12px;
+}
+
+.set-log-panel summary {
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.set-log-row {
+  display: grid;
+  grid-template-columns: 80px repeat(3, minmax(90px, 1fr)) minmax(160px, 1.4fr) 90px;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+.set-log-row label {
+  display: grid;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.set-log-row .check-row {
+  justify-content: center;
+}
+
 @media (max-width: 860px) {
   .shell {
     grid-template-columns: 1fr;
@@ -305,5 +541,20 @@ h3 {
 
   .section-header {
     display: grid;
+  }
+
+  .builder-board,
+  .workout-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .set-log-row {
+    grid-template-columns: 1fr;
+  }
+
+  .workout-pill,
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
