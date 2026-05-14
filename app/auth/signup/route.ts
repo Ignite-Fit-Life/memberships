@@ -42,4 +42,3 @@ export async function GET(request: Request) {
 
   return signUp(name, email, password, request);
 }
-
