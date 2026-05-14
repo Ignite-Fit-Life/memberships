@@ -10,7 +10,7 @@ export default function SignupPage() {
           Create your login first. Membership checkout can be connected through Stripe once your
           program and pricing are final.
         </p>
-        <form className="form" action="/auth/signup" style={{ marginTop: 28 }}>
+<form className="form" action="/auth/signup" method="post" style={{ marginTop: 28 }}>
           <label>
             Name
             <input name="name" type="text" autoComplete="name" />
