@@ -43,6 +43,9 @@ function numberValue(formData: FormData, key: string) {
 function refreshBuilder() {
   revalidatePath("/admin");
   revalidatePath("/workouts");
+  revalidatePath("/habits");
+  revalidatePath("/classroom");
+  revalidatePath("/community");
 }
 
 async function createProgram(formData: FormData) {
@@ -102,6 +105,43 @@ async function createLibraryExercise(formData: FormData) {
     regression: optionalText(formData, "regression"),
     progression: optionalText(formData, "progression"),
     substitutions: optionalText(formData, "substitutions")
+  });
+  refreshBuilder();
+}
+
+async function createHabit(formData: FormData) {
+  "use server";
+  await adminClient().from("habits").insert({
+    title: text(formData, "title"),
+    description: optionalText(formData, "description"),
+    frequency: text(formData, "frequency") || "daily",
+    target_value: numberValue(formData, "target_value"),
+    target_unit: optionalText(formData, "target_unit"),
+    is_active: formData.get("is_active") === "on"
+  });
+  refreshBuilder();
+}
+
+async function createClassroomLesson(formData: FormData) {
+  "use server";
+  await adminClient().from("classroom_lessons").insert({
+    title: text(formData, "title"),
+    description: optionalText(formData, "description"),
+    category: text(formData, "category") || "Performance",
+    video_url: optionalText(formData, "video_url"),
+    thumbnail_url: optionalText(formData, "thumbnail_url"),
+    is_published: formData.get("is_published") === "on",
+    sort_order: numberValue(formData, "sort_order") || 0
+  });
+  refreshBuilder();
+}
+
+async function createCommunity(formData: FormData) {
+  "use server";
+  await adminClient().from("communities").insert({
+    name: text(formData, "name"),
+    description: optionalText(formData, "description"),
+    visibility: text(formData, "visibility") || "members"
   });
   refreshBuilder();
 }
@@ -343,7 +383,7 @@ async function getAdminData() {
   const supabase = adminClient();
   const authUsers = await supabase.auth.admin.listUsers().catch(() => ({ data: { users: [] } }));
 
-  const [programs, weeks, workouts, blocks, library, workoutExercises, assignments, logs] = await Promise.all([
+  const [programs, weeks, workouts, blocks, library, workoutExercises, assignments, logs, habits, lessons, communities] = await Promise.all([
     safeSelect(supabase.from("workout_programs").select("*").order("created_at", { ascending: false }), []),
     safeSelect(supabase.from("program_weeks").select("*, workout_programs(title)").order("week_number", { ascending: true }), []),
     safeSelect(supabase.from("workouts").select("*, program_weeks(title, week_number, workout_programs(title))").order("day_number", { ascending: true }), []),
@@ -351,7 +391,10 @@ async function getAdminData() {
     safeSelect(supabase.from("exercise_library").select("*").order("name", { ascending: true }), []),
     safeSelect(supabase.from("workout_exercises").select("*, workout_blocks(title, type, workouts(title))").order("sort_order", { ascending: true }), []),
     safeSelect(supabase.from("program_assignments").select("*, workout_programs(title)").order("created_at", { ascending: false }), []),
-    safeSelect(supabase.from("workout_logs").select("*, workouts(title)").order("completed_at", { ascending: false }).limit(25), [])
+    safeSelect(supabase.from("workout_logs").select("*, workouts(title)").order("completed_at", { ascending: false }).limit(25), []),
+    safeSelect(supabase.from("habits").select("*").order("created_at", { ascending: false }), []),
+    safeSelect(supabase.from("classroom_lessons").select("*").order("sort_order", { ascending: true }), []),
+    safeSelect(supabase.from("communities").select("*").order("created_at", { ascending: false }), [])
   ]);
 
   return {
@@ -363,6 +406,9 @@ async function getAdminData() {
     workoutExercises: workoutExercises as DbRow[],
     assignments: assignments as DbRow[],
     logs: logs as DbRow[],
+    habits: habits as DbRow[],
+    lessons: lessons as DbRow[],
+    communities: communities as DbRow[],
     users: authUsers.data.users.map((user: any) => ({
       id: user.id,
       email: user.email,
@@ -392,17 +438,37 @@ export default async function AdminPage() {
 
   return (
     <AppShell>
-      <div className="topbar">
+      <div className="admin-workspace">
+      <div className="admin-hero">
         <div>
-          <p className="eyebrow">Admin</p>
-          <h1>Workout builder.</h1>
-          <p className="lead">Build structured programs, prescribe exercises, assign clients, and review progress.</p>
+          <p className="eyebrow">Admin control center</p>
+          <h1>Program builder</h1>
+          <p className="lead">Build structured coaching programs, prescribe exercises, assign clients, and review progress from one focused workspace.</p>
+        </div>
+        <div className="admin-metrics" aria-label="Builder overview">
+          <div>
+            <strong>{data.programs.length}</strong>
+            <span>Programs</span>
+          </div>
+          <div>
+            <strong>{data.weeks.length}</strong>
+            <span>Weeks</span>
+          </div>
+          <div>
+            <strong>{data.workouts.length}</strong>
+            <span>Workouts</span>
+          </div>
+          <div>
+            <strong>{data.library.length}</strong>
+            <span>Exercises</span>
+          </div>
         </div>
       </div>
 
       <nav className="builder-tabs" aria-label="Admin sections">
         <a href="#builder">Builder</a>
         <a href="#library">Exercise Library</a>
+        <a href="#content">Habits + Content</a>
         <a href="#assignments">Assignments</a>
         <a href="#progress">Progress</a>
       </nav>
@@ -712,6 +778,99 @@ export default async function AdminPage() {
         </form>
       </section>
 
+      <section id="content" className="content-admin-grid">
+        <article className="card admin-panel">
+          <div className="section-header">
+            <div>
+              <p className="eyebrow">Habits</p>
+              <h2>Add habit</h2>
+            </div>
+            <span>{data.habits.length} habits</span>
+          </div>
+          <form className="form admin-form" action={createHabit}>
+            <input name="title" placeholder="Habit title, e.g. 8,000 steps" required />
+            <textarea name="description" placeholder="Why this habit matters" rows={3} />
+            <div className="form-grid">
+              <select name="frequency" defaultValue="daily">
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+              </select>
+              <input name="target_value" type="number" step="0.1" placeholder="Target value" />
+              <input name="target_unit" placeholder="Target unit, e.g. steps, oz, minutes" />
+            </div>
+            <label className="check-row"><input name="is_active" type="checkbox" defaultChecked /> Active</label>
+            <button className="button" type="submit">Add Habit</button>
+          </form>
+          <div className="mini-list">
+            {data.habits.slice(0, 5).map((habit) => (
+              <div key={habit.id}>
+                <strong>{habit.title}</strong>
+                <span>{habit.frequency} · {habit.target_value || "-"} {habit.target_unit || ""}</span>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <article className="card admin-panel">
+          <div className="section-header">
+            <div>
+              <p className="eyebrow">Classroom</p>
+              <h2>Add lesson</h2>
+            </div>
+            <span>{data.lessons.length} lessons</span>
+          </div>
+          <form className="form admin-form" action={createClassroomLesson}>
+            <input name="title" placeholder="Lesson title" required />
+            <div className="form-grid">
+              <input name="category" placeholder="Category, e.g. Mobility" required />
+              <input name="sort_order" type="number" placeholder="Order" defaultValue={0} />
+            </div>
+            <input name="video_url" placeholder="Video URL" />
+            <input name="thumbnail_url" placeholder="Thumbnail URL" />
+            <textarea name="description" placeholder="Lesson summary" rows={3} />
+            <label className="check-row"><input name="is_published" type="checkbox" defaultChecked /> Published</label>
+            <button className="button" type="submit">Add Lesson</button>
+          </form>
+          <div className="mini-list">
+            {data.lessons.slice(0, 5).map((lesson) => (
+              <div key={lesson.id}>
+                <strong>{lesson.title}</strong>
+                <span>{lesson.category} · {lesson.is_published ? "published" : "draft"}</span>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <article className="card admin-panel">
+          <div className="section-header">
+            <div>
+              <p className="eyebrow">Community</p>
+              <h2>Add community</h2>
+            </div>
+            <span>{data.communities.length} communities</span>
+          </div>
+          <form className="form admin-form" action={createCommunity}>
+            <input name="name" placeholder="Community name" required />
+            <select name="visibility" defaultValue="members">
+              <option value="members">Members</option>
+              <option value="private">Private</option>
+              <option value="company">Company</option>
+              <option value="cohort">Cohort</option>
+            </select>
+            <textarea name="description" placeholder="Who this community is for" rows={3} />
+            <button className="button" type="submit">Add Community</button>
+          </form>
+          <div className="mini-list">
+            {data.communities.slice(0, 5).map((community) => (
+              <div key={community.id}>
+                <strong>{community.name}</strong>
+                <span>{community.visibility}</span>
+              </div>
+            ))}
+          </div>
+        </article>
+      </section>
+
       <section id="assignments" className="grid two">
         <article className="card admin-panel">
           <div className="section-header">
@@ -779,6 +938,7 @@ export default async function AdminPage() {
           </table>
         </article>
       </section>
+      </div>
     </AppShell>
   );
 }
